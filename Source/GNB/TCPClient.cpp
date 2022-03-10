@@ -33,9 +33,9 @@ void TCPClient::ConnectServer(std::string ip, int port)
 
 	yc_net::bind_ev<p_chat_message_t>([&](p_chat_message_t* chat, auto) {
 		FString msg = chat->msg;
-		auto self = this;
+		auto self = game_mode;
 		game_mode->jobs.enqueue([self, msg]{
-			self->game_mode->ChattingEvent.Broadcast(FChatMessage{ msg });
+			self->ChattingEvent.Broadcast(FChatMessage{ msg });
 			});
 		});
 

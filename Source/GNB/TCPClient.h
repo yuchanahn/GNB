@@ -20,4 +20,5 @@ public:
 
 	void ConnectServer(std::string ip, int port);
 	void SendChatting(std::wstring msg);
+	void GachaStart(char cnt);
 };

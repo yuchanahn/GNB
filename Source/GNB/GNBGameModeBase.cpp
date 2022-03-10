@@ -34,3 +34,8 @@ void AGNBGameModeBase::SendChatting(FString msg)
 {
 	clnt->SendChatting(*msg);
 }
+
+void AGNBGameModeBase::GachaStart(int32 cnt)
+{
+	clnt->GachaStart(static_cast<char>(cnt));
+}

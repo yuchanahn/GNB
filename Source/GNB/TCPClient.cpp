@@ -39,6 +39,14 @@ void TCPClient::ConnectServer(std::string ip, int port)
 			});
 		});
 
+	yc_net::bind_ev<p_gacha_result_t>([&](p_gacha_result_t* r, auto) {
+		auto gm = game_mode;
+		FGachaResult rr;
+		for (int i = 0; i < r->size; i++) rr.r.Add(static_cast<int32>(r->r[i]));
+		game_mode->jobs.enqueue([gm, rr] {
+			gm->GachaEvent.Broadcast(rr);
+			});
+		});
 
 	th = new std::thread([&] {
 		while (1)
@@ -56,5 +64,11 @@ void TCPClient::SendChatting(std::wstring msg)
 {
 	p_chat_message_t p{  };
 	std::copy(msg.begin(), msg.end(), p.msg);
+	send(p, buf, clnt->get_socket());
+}
+
+void TCPClient::GachaStart(char cnt)
+{
+	p_gacha_start_t p{ cnt };
 	send(p, buf, clnt->get_socket());
 }

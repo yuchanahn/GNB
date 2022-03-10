@@ -22,7 +22,17 @@ struct FChatMessage
 	FString msg;
 };
 
+USTRUCT(Atomic, Blueprintable)
+struct FGachaResult
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<int32> r;
+};
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FChattingEvent, FChatMessage, msg);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGachaEvent, FGachaResult, msg);
 /**
  * 
  */
@@ -48,6 +58,12 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "NET")
 	FChattingEvent ChattingEvent;
 
+	UPROPERTY(BlueprintAssignable, Category = "NET")
+	FGachaEvent GachaEvent;
+
 	UFUNCTION(BlueprintCallable, Category = "NET")
 	void SendChatting(FString msg);
+
+	UFUNCTION(BlueprintCallable, Category = "NET")
+	void GachaStart(int32 cnt);
 };

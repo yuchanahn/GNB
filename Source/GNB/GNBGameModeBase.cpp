@@ -39,3 +39,8 @@ void AGNBGameModeBase::GachaStart(int32 cnt)
 {
 	clnt->GachaStart(static_cast<char>(cnt));
 }
+
+void AGNBGameModeBase::SendMouseInput(FMouseInput data)
+{
+	clnt->SendMouseInput(data);
+}

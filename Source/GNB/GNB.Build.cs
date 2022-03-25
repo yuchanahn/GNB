@@ -9,7 +9,8 @@ public class GNB : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 		
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "UMG", "Slate", "SlateCore", "HeadMountedDisplay", "NavigationSystem", "AIModule" });
+		//PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "UMG", "Slate", "SlateCore", "HeadMountedDisplay", "NavigationSystem", "AIModule" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "UMG"});
 		PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
 	
 		PublicIncludePaths.Add(Path.GetFullPath(Path.Combine(ModuleDirectory, "../inc/")));

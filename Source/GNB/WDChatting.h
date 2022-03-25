@@ -22,11 +22,8 @@ public:
 	class UScrollBox* ChatHistoryArea;
 
 	UPROPERTY(Meta = (BindWidget))
-	class UEditableTextBox* ChatInputText;
+	class UEditableText* ChatInputText;
 
-
-	// 이 함수를 쓰기 위해서는,
-	// Build 파일에 "UMG" 모듈을 추가하고, "Slate", "SlateCore" 주석을 해제해야한다.
 	UFUNCTION()
 	void OnChatTextCommitted(const FText& Text, ETextCommit::Type CommitMethod);
 

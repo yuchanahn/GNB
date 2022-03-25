@@ -7,28 +7,30 @@
 
 #include "Components/TextBlock.h"
 #include "Components/ScrollBox.h"
-#include "Components/EditableTextBox.h"
+#include "Components/EditableText.h"
 #include "Kismet/GameplayStatics.h"
+#include "GNBPlayerController.h"
 
 
 void UWDChatting::OnChatTextCommitted(const FText& Text, ETextCommit::Type CommitMethod)
 {
 	AGNBGameModeBase* GM = Cast<AGNBGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
-	APlayerController* PC = Cast<APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+	AGNBPlayerController* PC = Cast<AGNBPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 	if (GM == nullptr) return;
+	if (PC == nullptr) return;
 
 	switch (CommitMethod)
 	{
 	case ETextCommit::OnEnter:
-		if (Text.IsEmpty() == false)
-		{
-			GM->SendChatting(Text.ToString()); // 메시지 보냄.
-			SetChatInputTextMessage(FText::GetEmpty()); // 메세지 전송했으니, 비워줌.
+		if (!Text.IsEmpty()) {
+			GM->SendChatting(Text.ToString());
+			SetChatInputTextMessage(FText::GetEmpty());
+			PC->FocusGame();
 		}
-		PC->SetInputMode(FInputModeGameOnly());
+		break;
+	case ETextCommit::OnUserMovedFocus:
 		break;
 	case ETextCommit::OnCleared:
-		PC->SetInputMode(FInputModeGameOnly());
 		break;
 	}
 }
@@ -42,13 +44,17 @@ void UWDChatting::NativeConstruct()
 {
 	Super::NativeConstruct();
 	AGNBGameModeBase* GM = Cast<AGNBGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
-	APlayerController* PC = Cast<APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+	AGNBPlayerController* PC = Cast<AGNBPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+	
 	if (GM == nullptr) return;
+	if (PC == nullptr) return;
+
+	PC->ChatWD = this;
+
 	FScriptDelegate d;
 	d.BindUFunction(this, TEXT("AddChatMessage"));
 	GM->ChattingEvent.Add(d);
 	ChatInputText->OnTextCommitted.AddDynamic(this, &UWDChatting::OnChatTextCommitted);
-	PC->InputComponent->BindAction(TEXT("ChatStartEnd"), IE_Pressed, ChatInputText, &UWidget::SetFocus);
 }
 
 void UWDChatting::AddChatMessage(const FString& Message)
@@ -58,5 +64,5 @@ void UWDChatting::AddChatMessage(const FString& Message)
 	NewTextBlock->SetText(FText::FromString(Message));
 
 	ChatHistoryArea->AddChild(NewTextBlock);
-	ChatHistoryArea->ScrollToEnd(); // 가장 최근 채팅을 보기 위해, 스크롤을 가장 아래로 내린다.
+	ChatHistoryArea->ScrollToEnd();
 }
